@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kozmic Pro Studio - Ultimate Portable Edition</title>
+    <title>Kozmic Pro Studio - Complete Recording Edition</title>
     <style>
         body {
             margin: 0;
@@ -56,24 +56,101 @@
             display: block;
         }
         
-        .cosmic-creature {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 2rem;
-            cursor: pointer;
-            z-index: 100;
-            animation: float 3s ease-in-out infinite;
+        .tuner-display {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #4ecdc4;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
         }
         
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(5deg); }
+        .tuner-note {
+            font-size: 4rem;
+            color: #ffd93d;
+            font-weight: bold;
+            text-shadow: 0 0 20px #ffd93d;
+        }
+        
+        .tuner-frequency {
+            font-size: 1.5rem;
+            color: #4ecdc4;
+            margin: 10px 0;
+        }
+        
+        .tuner-cents {
+            font-size: 2rem;
+            margin: 15px 0;
+        }
+        
+        .tuner-cents.sharp { color: #ff6b9d; }
+        .tuner-cents.flat { color: #ff6b9d; }
+        .tuner-cents.intune { color: #00ff00; }
+        
+        .tuner-meter {
+            width: 100%;
+            height: 40px;
+            background: linear-gradient(90deg, #ff6b9d 0%, #00ff00 50%, #ff6b9d 100%);
+            border-radius: 10px;
+            position: relative;
+            margin: 20px 0;
+        }
+        
+        .tuner-needle {
+            position: absolute;
+            width: 4px;
+            height: 100%;
+            background: white;
+            left: 50%;
+            box-shadow: 0 0 10px white;
+            transition: left 0.1s;
+        }
+        
+        .metronome-display {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff6b9d;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .bpm-display {
+            font-size: 3rem;
+            color: #ffd93d;
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .beat-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .beat-dot {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 107, 157, 0.3);
+            border: 2px solid #ff6b9d;
+            transition: all 0.1s;
+        }
+        
+        .beat-dot.active {
+            background: #ffd93d;
+            box-shadow: 0 0 20px #ffd93d;
+            transform: scale(1.3);
+        }
+        
+        .beat-dot.accent {
+            border-color: #ffd93d;
+            border-width: 3px;
         }
         
         .controls-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
             margin: 20px 0;
         }
@@ -83,25 +160,25 @@
             padding: 15px;
             border-radius: 10px;
             border: 1px solid #ff6b9d;
-            text-align: center;
         }
         
         .control-group h3 {
             margin: 0 0 10px 0;
             color: #4ecdc4;
-            font-size: 0.9rem;
+            font-size: 1rem;
+            text-align: center;
         }
         
         .btn {
             background: linear-gradient(45deg, #ff6b9d, #4ecdc4);
             border: none;
-            padding: 8px 12px;
+            padding: 10px 15px;
             border-radius: 8px;
             color: white;
             font-family: inherit;
             cursor: pointer;
-            margin: 2px;
-            font-size: 0.8rem;
+            margin: 5px 2px;
+            font-size: 0.9rem;
             transition: all 0.3s ease;
             width: 100%;
         }
@@ -116,93 +193,54 @@
             box-shadow: 0 0 20px rgba(255, 217, 61, 0.5);
         }
         
+        .slider-control {
+            width: 100%;
+            margin: 10px 0;
+        }
+        
+        .slider-control input {
+            width: 100%;
+            margin: 5px 0;
+        }
+        
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #4ecdc4;
+        }
+        
+        select {
+            width: 100%;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: 1px solid #4ecdc4;
+            border-radius: 5px;
+            font-family: inherit;
+            margin: 5px 0;
+        }
+        
         .status-bar {
             background: rgba(0, 0, 0, 0.3);
             padding: 10px;
             border-radius: 10px;
             margin: 20px 0;
             border: 1px solid #4ecdc4;
-        }
-        
-        .status-bar div {
-            margin: 5px 0;
             font-size: 0.9rem;
-        }
-        
-        .intensity-slider {
-            width: 100%;
-            margin: 10px 0;
-            background: transparent;
-            outline: none;
-            appearance: none;
-            height: 5px;
-            border-radius: 5px;
-            background: linear-gradient(90deg, #ff6b9d, #4ecdc4);
-        }
-        
-        .intensity-slider::-webkit-slider-thumb {
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #ffd93d;
-            cursor: pointer;
-            border: 2px solid #fff;
-        }
-        
-        .effects-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin: 15px 0;
-        }
-        
-        .record-controls {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin: 15px 0;
-        }
-        
-        .record-controls .btn {
-            flex: 1;
-            min-width: 120px;
-        }
-        
-        .session-info {
-            background: rgba(76, 205, 196, 0.1);
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #4ecdc4;
-            font-size: 0.8rem;
-            margin: 10px 0;
-        }
-        
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 15px;
-            border: 1px solid #4ecdc4;
         }
         
         @media (max-width: 768px) {
             .controls-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
+                grid-template-columns: 1fr;
             }
             
-            .effects-grid {
-                grid-template-columns: repeat(2, 1fr);
+            .tuner-note {
+                font-size: 3rem;
             }
             
-            .record-controls {
-                flex-direction: column;
-            }
-            
-            .record-controls .btn {
-                min-width: unset;
+            .bpm-display {
+                font-size: 2rem;
             }
         }
     </style>
@@ -210,1075 +248,587 @@
 <body>
     <div class="studio-container">
         <div class="header">
-            <h1>🌌 KOZMIC PRO STUDIO 🎸</h1>
-            <p>Ultimate Portable Edition with WebGL Cosmos</p>
+            <h1>KOZMIC PRO STUDIO</h1>
+            <p>Complete Recording Edition - Tuner + Metronome + Effects</p>
         </div>
         
+        <!-- Tuner Display -->
+        <div class="tuner-display">
+            <h2>INSTRUMENT TUNER</h2>
+            <div class="tuner-note" id="tunerNote">-</div>
+            <div class="tuner-frequency" id="tunerFreq">--- Hz</div>
+            <div class="tuner-cents" id="tunerCents">0 cents</div>
+            <div class="tuner-meter">
+                <div class="tuner-needle" id="tunerNeedle"></div>
+            </div>
+            <button class="btn" id="tunerBtn" onclick="toggleTuner()">Start Tuner</button>
+        </div>
+        
+        <!-- Metronome Display -->
+        <div class="metronome-display">
+            <h2>METRONOME</h2>
+            <div class="bpm-display" id="bpmDisplay">120 BPM</div>
+            <div class="beat-indicator" id="beatIndicator"></div>
+            
+            <div class="control-group">
+                <div class="slider-control">
+                    <div class="slider-label">
+                        <span>BPM:</span>
+                        <span id="bpmValue">120</span>
+                    </div>
+                    <input type="range" min="40" max="240" value="120" id="bpmSlider" oninput="updateBPM(this.value)">
+                </div>
+                
+                <select id="timeSignature" onchange="changeTimeSignature()">
+                    <option value="4/4">4/4 (Common Time)</option>
+                    <option value="3/4">3/4 (Waltz)</option>
+                    <option value="6/8">6/8 (Compound)</option>
+                    <option value="5/4">5/4 (Take Five)</option>
+                    <option value="7/8">7/8 (Odd Time)</option>
+                    <option value="2/4">2/4 (March)</option>
+                </select>
+                
+                <select id="rhythmStyle" onchange="changeRhythmStyle()">
+                    <option value="straight">Straight</option>
+                    <option value="swing">Swing (Triplet Feel)</option>
+                    <option value="shuffle">Shuffle (Heavy Swing)</option>
+                    <option value="jazz-swing">Jazz Swing</option>
+                    <option value="latin">Latin Clave</option>
+                </select>
+                
+                <button class="btn" id="metronomeBtn" onclick="toggleMetronome()">Start Metronome</button>
+            </div>
+        </div>
+        
+        <!-- Visualization Canvas -->
         <div class="canvas-container">
             <canvas id="cosmicCanvas"></canvas>
-            <div class="cosmic-creature" id="cosmicCreature" onclick="clickCreature()">🌟</div>
         </div>
         
+        <!-- Effects and Recording Controls -->
         <div class="controls-grid">
             <div class="control-group">
-                <h3>🎨 Visual Effects</h3>
-                <div class="effects-grid">
-                    <button class="btn" id="particlesBtn" onclick="setPortableEffect('particles')">Particles</button>
-                    <button class="btn" id="nebulaBtn" onclick="setPortableEffect('nebula')">Nebula</button>
-                    <button class="btn" id="waveformBtn" onclick="setPortableEffect('waveform')">Waveform</button>
-                    <button class="btn" id="cosmicBtn" onclick="setPortableEffect('cosmic')">Cosmic</button>
-                    <button class="btn" id="spiralBtn" onclick="setPortableEffect('spiral')">Spiral</button>
-                    <button class="btn" id="burstBtn" onclick="setPortableEffect('burst')">Burst</button>
-                </div>
+                <h3>Audio Input</h3>
+                <button class="btn" id="connectBtn" onclick="connectAudio()">Connect Audio</button>
+                <button class="btn" id="recordBtn" onclick="toggleRecord()">Start Recording</button>
             </div>
             
             <div class="control-group">
-                <h3>🎵 Audio Control</h3>
-                <button class="btn" id="connectBtn" onclick="connectPortableAudio()">Connect Audio</button>
-                <button class="btn" id="amplifyBtn" onclick="toggleAmplify()">Amplify OFF</button>
-                <div>
-                    <label>Intensity:</label>
-                    <input type="range" class="intensity-slider" id="intensitySlider" 
-                           min="0" max="100" value="50" oninput="updateIntensity(this.value)">
-                    <span id="intensityValue">50%</span>
-                </div>
+                <h3>Visual Effects</h3>
+                <button class="btn" onclick="setEffect('particles')">Particles</button>
+                <button class="btn" onclick="setEffect('waveform')">Waveform</button>
+                <button class="btn" onclick="setEffect('spiral')">Spiral</button>
             </div>
             
             <div class="control-group">
-                <h3>🎛️ Audio Effects</h3>
+                <h3>Audio Effects</h3>
                 <button class="btn" id="reverbBtn" onclick="toggleReverb()">Reverb OFF</button>
-                <div>
-                    <label>Reverb Mix:</label>
-                    <input type="range" class="intensity-slider" id="reverbSlider" 
-                           min="0" max="100" value="30" oninput="updateReverbMix(this.value)">
-                    <span id="reverbValue">30%</span>
-                </div>
-            </div>
-            
-            <div class="control-group">
-                <h3>🎤 Recording</h3>
-                <div class="record-controls">
-                    <button class="btn" id="recordBtn" onclick="togglePortableRecord()">Start Record</button>
-                    <button class="btn" id="exportBtn" onclick="exportPortableRecording()">Export Track</button>
-                </div>
-            </div>
-            
-            <div class="control-group">
-                <h3>💾 Session</h3>
-                <button class="btn" onclick="savePortableSession()">Save Session</button>
-                <button class="btn" onclick="loadPortableSession()">Load Session</button>
-                <div class="session-info" id="portableSessionInfo">
-                    Session: New<br>
-                    Effect: PARTICLES<br>
-                    Mode: PORTABLE
+                <div class="slider-control">
+                    <div class="slider-label">
+                        <span>Mix:</span>
+                        <span id="reverbValue">30%</span>
+                    </div>
+                    <input type="range" min="0" max="100" value="30" oninput="updateReverb(this.value)">
                 </div>
             </div>
         </div>
         
         <div class="status-bar">
-            <div><strong>Status:</strong> <span id="portableStatus">READY</span></div>
-            <div><strong>Audio:</strong> <span id="audioStatus">DISCONNECTED</span></div>
-            <div><strong>Recording:</strong> <span id="recordStatus">STOPPED</span></div>
-            <div><strong>Effects:</strong> <span id="effectsStatus">VISUAL ONLY</span></div>
-            <div><strong>Session Timer:</strong> <span id="sessionTimer">00:00</span></div>
-        </div>
-        
-        <div class="footer">
-            <h3>🌌 Welcome to the Kozmic Experience! 🎸</h3>
-            <p>Connect your instrument, select effects, and create cosmic audio-visual experiences!</p>
-            <p><em>Peace and Universal Harmony! ψΩ§∞</em></p>
+            <div><strong>Status:</strong> <span id="status">Ready</span></div>
+            <div><strong>Audio:</strong> <span id="audioStatus">Disconnected</span></div>
+            <div><strong>Tuner:</strong> <span id="tunerStatus">Off</span></div>
+            <div><strong>Metronome:</strong> <span id="metroStatus">Off</span></div>
         </div>
     </div>
 
     <script>
         // Global variables
-        let portableCanvas, portableCtx, portableGL;
-        let portableAudioContext, portableSource, portableAnalyser, portableDataArray;
-        let portableCurrentEffect = 'particles';
-        let portableIntensity = 50;
-        let portableIsAmplified = false;
-        let portableIsRecording = false;
-        let portableRecorder, portableRecordChunks = [];
-        let portableSessionStartTime = Date.now();
-        let portableAnimationId;
-        let portableParticles = [];
-        let portableReverbNode, portableReverbGain, portableReverbEnabled = false;
-        let creatureClickCount = 0;
+        let audioContext, source, analyser, dataArray;
+        let canvas, ctx;
+        let currentEffect = 'particles';
+        let particles = [];
+        let isRecording = false;
+        let recorder, recordChunks = [];
         
-        // Audio Effects Chain
-        let portableEffectsChain = {
-            inputGain: null,
-            reverb: null,
-            outputGain: null
-        };
-
-        // Initialize on load
+        // Tuner variables
+        let tunerActive = false;
+        let tunerInterval;
+        const noteStrings = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        const A4 = 440;
+        
+        // Metronome variables
+        let metronomeActive = false;
+        let metronomeBPM = 120;
+        let metronomeInterval;
+        let currentBeat = 0;
+        let beatsPerMeasure = 4;
+        let rhythmStyle = 'straight';
+        let metronomeOscillator;
+        
+        // Reverb
+        let reverbNode, reverbGain, reverbEnabled = false;
+        
+        // Initialize
         window.onload = function() {
-            try {
-                // Initialize with error handling
-                safeExecute(() => {
-                    initPortableCanvas();
-                    initPortableWebGL();
-                    createPortableParticles();
-                    startPortableVisualization();
-                    startSessionTimer();
-                }, 'Initialization failed');
-                
-                updateStatus('Kozmic Pro Studio initialized! 🌌');
-                
-                // Additional safety checks
-                setTimeout(() => {
-                    if (!portableCanvas) {
-                        updateStatus('Canvas initialization delayed - retrying...');
-                        initPortableCanvas();
-                    }
-                }, 1000);
-                
-            } catch (error) {
-                console.error('Window load error:', error);
-                updateStatus('Startup error - some features may be limited');
-            }
-        };
-
-        // Canvas and WebGL initialization with better error handling
-        function initPortableCanvas() {
-            try {
-                portableCanvas = document.getElementById('cosmicCanvas');
-                if (!portableCanvas) {
-                    console.warn('Canvas element not found');
-                    return false;
-                }
-                
-                // Set canvas size
-                const container = portableCanvas.parentElement;
-                if (container) {
-                    portableCanvas.width = container.offsetWidth || 800;
-                    portableCanvas.height = container.offsetHeight || 400;
-                } else {
-                    portableCanvas.width = 800;
-                    portableCanvas.height = 400;
-                }
-                
-                // Try WebGL first, fallback to 2D
-                try {
-                    portableGL = portableCanvas.getContext('webgl') || portableCanvas.getContext('experimental-webgl');
-                    if (!portableGL) {
-                        throw new Error('WebGL not supported');
-                    }
-                    updateStatus('WebGL initialized successfully! ✨');
-                    return true;
-                } catch (error) {
-                    console.warn('WebGL failed, using 2D canvas:', error);
-                    portableCtx = portableCanvas.getContext('2d');
-                    updateStatus('Using 2D Canvas (WebGL unavailable)');
-                    return true;
-                }
-            } catch (error) {
-                console.error('Canvas initialization error:', error);
-                updateStatus('Canvas initialization failed');
-                return false;
-            }
-        }
-
-        function initPortableWebGL() {
-            if (!portableGL) {
-                console.log('WebGL not available, skipping WebGL initialization');
-                return;
-            }
+            canvas = document.getElementById('cosmicCanvas');
+            ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
             
+            createParticles();
+            animate();
+            createBeatIndicator();
+        };
+        
+        // Audio connection
+        async function connectAudio() {
             try {
-                // Basic WebGL setup with error checking
-                const canvas = portableGL.canvas;
-                if (canvas.width === 0 || canvas.height === 0) {
-                    console.warn('Canvas has zero dimensions');
-                    return;
-                }
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                source = audioContext.createMediaStreamSource(stream);
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 2048;
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
                 
-                portableGL.viewport(0, 0, canvas.width, canvas.height);
-                portableGL.clearColor(0.1, 0.1, 0.18, 1.0);
-                portableGL.enable(portableGL.BLEND);
-                portableGL.blendFunc(portableGL.SRC_ALPHA, portableGL.ONE_MINUS_SRC_ALPHA);
-                
-                updateStatus('WebGL viewport configured ✨');
-            } catch (error) {
-                console.error('WebGL initialization error:', error);
-                updateStatus('WebGL setup failed, using 2D fallback');
-                portableGL = null;
-                if (!portableCtx && portableCanvas) {
-                    portableCtx = portableCanvas.getContext('2d');
-                }
-            }
-        }
-
-        // Enhanced Audio Connection with Reverb
-        async function connectPortableAudio() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    audio: {
-                        echoCancellation: false,
-                        noiseSuppression: false,
-                        autoGainControl: false,
-                        sampleRate: 44100
-                    }
-                });
-
-                portableAudioContext = new (window.AudioContext || window.webkitAudioContext)();
-                portableSource = portableAudioContext.createMediaStreamSource(stream);
-                portableAnalyser = portableAudioContext.createAnalyser();
-                portableAnalyser.fftSize = 2048;
-                portableDataArray = new Uint8Array(portableAnalyser.frequencyBinCount);
-
                 // Create effects chain
-                portableEffectsChain.inputGain = portableAudioContext.createGain();
-                portableEffectsChain.outputGain = portableAudioContext.createGain();
+                const inputGain = audioContext.createGain();
+                const outputGain = audioContext.createGain();
+                
+                source.connect(inputGain);
+                inputGain.connect(analyser);
+                inputGain.connect(outputGain);
+                outputGain.connect(audioContext.destination);
                 
                 // Create reverb
-                createReverbNode();
+                reverbNode = audioContext.createConvolver();
+                reverbGain = audioContext.createGain();
+                createReverbImpulse();
+                reverbGain.gain.value = 0.3;
                 
-                // Connect audio chain
-                portableSource.connect(portableEffectsChain.inputGain);
-                portableEffectsChain.inputGain.connect(portableAnalyser);
-                portableEffectsChain.inputGain.connect(portableEffectsChain.outputGain);
-                portableEffectsChain.outputGain.connect(portableAudioContext.destination);
-
-                // Set initial gains
-                portableEffectsChain.inputGain.gain.setValueAtTime(0.8, portableAudioContext.currentTime);
-                portableEffectsChain.outputGain.gain.setValueAtTime(0.7, portableAudioContext.currentTime);
-
-                document.getElementById('audioStatus').textContent = 'CONNECTED';
-                document.getElementById('effectsStatus').textContent = 'AUDIO + VISUAL';
+                document.getElementById('audioStatus').textContent = 'Connected';
                 document.getElementById('connectBtn').textContent = 'Audio Connected';
-                updateStatus('Audio connected with professional effects chain! 🎸');
-
+                updateStatus('Audio connected successfully');
+                
             } catch (error) {
-                updateStatus(`Audio connection failed: ${error.message}`);
-                console.error('Audio connection error:', error);
+                updateStatus('Audio connection failed: ' + error.message);
             }
         }
-
-        // Create Reverb Node
-        function createReverbNode() {
-            if (!portableAudioContext) return;
-
-            portableReverbNode = portableAudioContext.createConvolver();
-            portableReverbGain = portableAudioContext.createGain();
+        
+        function createReverbImpulse() {
+            const length = audioContext.sampleRate * 2;
+            const impulse = audioContext.createBuffer(2, length, audioContext.sampleRate);
             
-            // Create impulse response for concert hall reverb
-            const impulseLength = portableAudioContext.sampleRate * 3; // 3 second reverb
-            const impulse = portableAudioContext.createBuffer(2, impulseLength, portableAudioContext.sampleRate);
-            
-            for (let channel = 0; channel < impulse.numberOfChannels; channel++) {
-                const channelData = impulse.getChannelData(channel);
-                for (let i = 0; i < impulseLength; i++) {
-                    const decay = Math.pow(1 - i / impulseLength, 3);
-                    channelData[i] = (Math.random() * 2 - 1) * decay;
+            for (let channel = 0; channel < 2; channel++) {
+                const data = impulse.getChannelData(channel);
+                for (let i = 0; i < length; i++) {
+                    data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 2);
                 }
             }
-            
-            portableReverbNode.buffer = impulse;
-            portableReverbGain.gain.setValueAtTime(0.3, portableAudioContext.currentTime);
-            
-            updateStatus('Professional reverb created! 🎵');
+            reverbNode.buffer = impulse;
         }
-
-        // Toggle Reverb Effect
+        
         function toggleReverb() {
-            if (!portableAudioContext || !portableReverbNode) {
-                updateStatus('Connect audio first to use reverb!');
+            if (!audioContext) {
+                updateStatus('Connect audio first');
                 return;
             }
-
-            portableReverbEnabled = !portableReverbEnabled;
-            const reverbBtn = document.getElementById('reverbBtn');
-            
-            if (portableReverbEnabled) {
-                // Connect reverb to the chain
-                portableEffectsChain.inputGain.connect(portableReverbNode);
-                portableReverbNode.connect(portableReverbGain);
-                portableReverbGain.connect(portableEffectsChain.outputGain);
-                
-                reverbBtn.textContent = 'Reverb ON';
-                reverbBtn.classList.add('active');
-                updateStatus('Reverb effect enabled! 🌊');
-            } else {
-                // Disconnect reverb
-                try {
-                    portableEffectsChain.inputGain.disconnect(portableReverbNode);
-                    portableReverbNode.disconnect(portableReverbGain);
-                    portableReverbGain.disconnect(portableEffectsChain.outputGain);
-                } catch (e) {
-                    // Handle disconnect errors gracefully
-                }
-                
-                reverbBtn.textContent = 'Reverb OFF';
-                reverbBtn.classList.remove('active');
-                updateStatus('Reverb effect disabled');
-            }
+            reverbEnabled = !reverbEnabled;
+            document.getElementById('reverbBtn').textContent = reverbEnabled ? 'Reverb ON' : 'Reverb OFF';
+            updateStatus('Reverb ' + (reverbEnabled ? 'enabled' : 'disabled'));
         }
-
-        // Update Reverb Mix
-        function updateReverbMix(value) {
-            if (portableReverbGain) {
-                const mix = value / 100;
-                portableReverbGain.gain.setValueAtTime(mix, portableAudioContext.currentTime);
-                document.getElementById('reverbValue').textContent = value + '%';
-                updateStatus(`Reverb mix: ${value}%`);
+        
+        function updateReverb(value) {
+            if (reverbGain) {
+                reverbGain.gain.value = value / 100;
             }
+            document.getElementById('reverbValue').textContent = value + '%';
         }
-
-        // Enhanced Recording with Modern MediaRecorder
-        async function togglePortableRecord() {
-            if (!portableIsRecording) {
-                try {
-                    // Get fresh audio stream for recording
-                    const stream = await navigator.mediaDevices.getUserMedia({ 
-                        audio: {
-                            echoCancellation: false,
-                            noiseSuppression: false,
-                            autoGainControl: false,
-                            sampleRate: 44100
-                        }
-                    });
-
-                    portableRecorder = new MediaRecorder(stream, {
-                        mimeType: 'audio/webm;codecs=opus'
-                    });
-
-                    portableRecordChunks = [];
-                    
-                    portableRecorder.ondataavailable = function(event) {
-                        if (event.data.size > 0) {
-                            portableRecordChunks.push(event.data);
-                        }
-                    };
-
-                    portableRecorder.onstop = function() {
-                        document.getElementById('recordStatus').textContent = 'STOPPED';
-                        document.getElementById('recordBtn').textContent = 'Start Record';
-                        updateStatus('Recording stopped - ready to export! 🎵');
-                    };
-
-                    portableRecorder.start(1000); // Collect data every second
-                    portableIsRecording = true;
-                    
-                    document.getElementById('recordStatus').textContent = 'RECORDING';
-                    document.getElementById('recordBtn').textContent = 'Stop Record';
-                    document.getElementById('recordBtn').classList.add('active');
-                    updateStatus('Recording started! 🔴');
-
-                } catch (error) {
-                    updateStatus(`Recording failed: ${error.message}`);
-                }
-            } else {
-                if (portableRecorder && portableRecorder.state === 'recording') {
-                    portableRecorder.stop();
-                }
-                portableIsRecording = false;
-                document.getElementById('recordBtn').classList.remove('active');
-            }
-        }
-
-        // Export Recording with Timestamp
-        function exportPortableRecording() {
-            if (portableRecordChunks.length === 0) {
-                updateStatus('No recording to export! Record something first.');
+        
+        // Tuner functions
+        function toggleTuner() {
+            if (!audioContext) {
+                updateStatus('Connect audio first');
                 return;
             }
-
-            const blob = new Blob(portableRecordChunks, { type: 'audio/webm' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
             
-            const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
-            a.href = url;
-            a.download = `kozmic-portable-${portableCurrentEffect}-${timestamp}.webm`;
+            tunerActive = !tunerActive;
             
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            
-            URL.revokeObjectURL(url);
-            portableRecordChunks = [];
-            
-            updateStatus('Recording exported successfully! 📤');
+            if (tunerActive) {
+                document.getElementById('tunerBtn').textContent = 'Stop Tuner';
+                document.getElementById('tunerBtn').classList.add('active');
+                document.getElementById('tunerStatus').textContent = 'Active';
+                startTuner();
+            } else {
+                document.getElementById('tunerBtn').textContent = 'Start Tuner';
+                document.getElementById('tunerBtn').classList.remove('active');
+                document.getElementById('tunerStatus').textContent = 'Off';
+                stopTuner();
+            }
         }
-
-        // Enhanced Session Management with File System Access API
-        async function loadPortableSession() {
-            try {
-                // Try modern File System Access API first
-                if ('showOpenFilePicker' in window) {
-                    const [fileHandle] = await window.showOpenFilePicker({
-                        types: [{
-                            description: 'Kozmic Sessions',
-                            accept: {
-                                'application/json': ['.json']
-                            }
-                        }]
-                    });
-                    
-                    const file = await fileHandle.getFile();
-                    const sessionData = JSON.parse(await file.text());
-                    
-                    // Apply session data
-                    portableCurrentEffect = sessionData.effect || 'particles';
-                    portableIntensity = sessionData.intensity || 50;
-                    portableIsAmplified = sessionData.amplified || false;
-                    
-                    // Update UI
-                    setPortableEffect(portableCurrentEffect);
-                    document.getElementById('intensitySlider').value = portableIntensity;
-                    document.getElementById('intensityValue').textContent = portableIntensity + '%';
-                    
-                    if (portableIsAmplified) {
-                        document.getElementById('amplifyBtn').textContent = 'Amplify ON';
-                        document.getElementById('amplifyBtn').classList.add('active');
+        
+        function startTuner() {
+            tunerInterval = setInterval(updateTuner, 100);
+        }
+        
+        function stopTuner() {
+            clearInterval(tunerInterval);
+            document.getElementById('tunerNote').textContent = '-';
+            document.getElementById('tunerFreq').textContent = '--- Hz';
+            document.getElementById('tunerCents').textContent = '0 cents';
+        }
+        
+        function updateTuner() {
+            if (!analyser) return;
+            
+            const bufferLength = analyser.fftSize;
+            const buffer = new Float32Array(bufferLength);
+            analyser.getFloatTimeDomainData(buffer);
+            
+            const frequency = autoCorrelate(buffer, audioContext.sampleRate);
+            
+            if (frequency > 0) {
+                const note = frequencyToNote(frequency);
+                const cents = frequencyToCents(frequency, note.frequency);
+                
+                document.getElementById('tunerNote').textContent = note.note;
+                document.getElementById('tunerFreq').textContent = frequency.toFixed(1) + ' Hz';
+                
+                const centsDisplay = document.getElementById('tunerCents');
+                centsDisplay.textContent = (cents > 0 ? '+' : '') + cents.toFixed(0) + ' cents';
+                
+                if (Math.abs(cents) < 5) {
+                    centsDisplay.className = 'tuner-cents intune';
+                } else if (cents > 0) {
+                    centsDisplay.className = 'tuner-cents sharp';
+                } else {
+                    centsDisplay.className = 'tuner-cents flat';
+                }
+                
+                // Update needle position
+                const needle = document.getElementById('tunerNeedle');
+                const position = 50 + (cents / 50) * 50; // Scale -50 to +50 cents across meter
+                needle.style.left = Math.max(0, Math.min(100, position)) + '%';
+            }
+        }
+        
+        function autoCorrelate(buffer, sampleRate) {
+            let size = buffer.length;
+            let maxSamples = Math.floor(size / 2);
+            let bestOffset = -1;
+            let bestCorrelation = 0;
+            let rms = 0;
+            
+            for (let i = 0; i < size; i++) {
+                rms += buffer[i] * buffer[i];
+            }
+            rms = Math.sqrt(rms / size);
+            
+            if (rms < 0.01) return -1;
+            
+            let lastCorrelation = 1;
+            for (let offset = 1; offset < maxSamples; offset++) {
+                let correlation = 0;
+                for (let i = 0; i < maxSamples; i++) {
+                    correlation += Math.abs(buffer[i] - buffer[i + offset]);
+                }
+                correlation = 1 - (correlation / maxSamples);
+                
+                if (correlation > 0.9 && correlation > lastCorrelation) {
+                    const foundGoodCorrelation = correlation > bestCorrelation;
+                    if (foundGoodCorrelation) {
+                        bestCorrelation = correlation;
+                        bestOffset = offset;
                     }
-                    
-                    document.getElementById('portableSessionInfo').innerHTML = `
-                        Session: ${sessionData.name || 'Loaded'}<br>
-                        Effect: ${portableCurrentEffect.toUpperCase()}<br>
-                        Mode: PORTABLE
-                    `;
-                    
-                    createPortableParticles();
-                    updateStatus('Session loaded with File System Access API! 🌌');
-                    
-                } else {
-                    // Fallback to traditional file input
-                    const input = document.createElement('input');
-                    input.type = 'file';
-                    input.accept = '.json';
-                    
-                    input.onchange = function(event) {
-                        const file = event.target.files[0];
-                        if (file) {
-                            const reader = new FileReader();
-                            reader.onload = function(e) {
-                                try {
-                                    const sessionData = JSON.parse(e.target.result);
-                                    
-                                    portableCurrentEffect = sessionData.effect || 'particles';
-                                    portableIntensity = sessionData.intensity || 50;
-                                    portableIsAmplified = sessionData.amplified || false;
-                                    
-                                    setPortableEffect(portableCurrentEffect);
-                                    document.getElementById('intensitySlider').value = portableIntensity;
-                                    document.getElementById('intensityValue').textContent = portableIntensity + '%';
-                                    
-                                    document.getElementById('portableSessionInfo').innerHTML = `
-                                        Session: ${sessionData.name || 'Loaded'}<br>
-                                        Effect: ${portableCurrentEffect.toUpperCase()}<br>
-                                        Mode: PORTABLE
-                                    `;
-                                    
-                                    createPortableParticles();
-                                    updateStatus('Session loaded successfully! 🌌');
-                                    
-                                } catch (error) {
-                                    updateStatus(`Session load failed: ${error.message}`);
-                                }
-                            };
-                            reader.readAsText(file);
-                        }
-                    };
-                    
-                    input.click();
                 }
-                
-            } catch (error) {
-                if (error.name === 'AbortError') {
-                    updateStatus('Load cancelled by user');
-                } else {
-                    updateStatus(`Load failed: ${error.message}`);
-                }
+                lastCorrelation = correlation;
+            }
+            
+            if (bestCorrelation > 0.01) {
+                return sampleRate / bestOffset;
+            }
+            return -1;
+        }
+        
+        function frequencyToNote(frequency) {
+            const noteNum = 12 * (Math.log(frequency / A4) / Math.log(2));
+            const roundedNote = Math.round(noteNum);
+            const noteName = noteStrings[(roundedNote + 9) % 12];
+            const octave = Math.floor((roundedNote + 9) / 12) + 4;
+            const noteFreq = A4 * Math.pow(2, roundedNote / 12);
+            
+            return {
+                note: noteName + octave,
+                frequency: noteFreq
+            };
+        }
+        
+        function frequencyToCents(frequency, targetFreq) {
+            return Math.floor(1200 * Math.log(frequency / targetFreq) / Math.log(2));
+        }
+        
+        // Metronome functions
+        function createBeatIndicator() {
+            const indicator = document.getElementById('beatIndicator');
+            indicator.innerHTML = '';
+            for (let i = 0; i < beatsPerMeasure; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'beat-dot' + (i === 0 ? ' accent' : '');
+                dot.id = 'beat' + i;
+                indicator.appendChild(dot);
             }
         }
-
-        // Save Session
-        function savePortableSession() {
-            const sessionData = {
-                name: `Kozmic-${Date.now()}`,
-                effect: portableCurrentEffect,
-                intensity: portableIntensity,
-                amplified: portableIsAmplified,
-                timestamp: new Date().toISOString(),
-                version: '1.0'
-            };
-
-            const blob = new Blob([JSON.stringify(sessionData, null, 2)], {
-                type: 'application/json'
-            });
+        
+        function toggleMetronome() {
+            if (!audioContext) {
+                updateStatus('Connect audio first');
+                return;
+            }
             
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `kozmic-session-${Date.now()}.json`;
+            metronomeActive = !metronomeActive;
             
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            
-            URL.revokeObjectURL(url);
-            
-            document.getElementById('portableSessionInfo').innerHTML = `
-                Session: ${sessionData.name}<br>
-                Effect: ${portableCurrentEffect.toUpperCase()}<br>
-                Mode: PORTABLE
-            `;
-            
-            updateStatus('Session saved successfully! 💾');
+            if (metronomeActive) {
+                document.getElementById('metronomeBtn').textContent = 'Stop Metronome';
+                document.getElementById('metronomeBtn').classList.add('active');
+                document.getElementById('metroStatus').textContent = 'Playing';
+                startMetronome();
+            } else {
+                document.getElementById('metronomeBtn').textContent = 'Start Metronome';
+                document.getElementById('metronomeBtn').classList.remove('active');
+                document.getElementById('metroStatus').textContent = 'Off';
+                stopMetronome();
+            }
         }
-
-        // Visual Effects System
-        function setPortableEffect(effect) {
-            portableCurrentEffect = effect;
+        
+        function startMetronome() {
+            currentBeat = 0;
+            playClick();
             
-            // Update button states
-            document.querySelectorAll('.effects-grid .btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.getElementById(effect + 'Btn').classList.add('active');
-            
-            createPortableParticles();
-            updateStatus(`Effect: ${effect.toUpperCase()}`);
+            const interval = (60 / metronomeBPM) * 1000;
+            metronomeInterval = setInterval(() => {
+                currentBeat = (currentBeat + 1) % beatsPerMeasure;
+                playClick();
+            }, interval);
         }
-
-        function createPortableParticles() {
-            portableParticles = [];
-            const particleCount = 50 + (portableIntensity / 2);
+        
+        function stopMetronome() {
+            clearInterval(metronomeInterval);
+            document.querySelectorAll('.beat-dot').forEach(dot => dot.classList.remove('active'));
+        }
+        
+        function playClick() {
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
             
-            for (let i = 0; i < particleCount; i++) {
-                portableParticles.push({
-                    x: Math.random() * portableCanvas.width,
-                    y: Math.random() * portableCanvas.height,
-                    vx: (Math.random() - 0.5) * 4,
-                    vy: (Math.random() - 0.5) * 4,
-                    size: Math.random() * 3 + 1,
-                    color: `hsl(${Math.random() * 360}, 70%, 60%)`,
-                    life: 1.0,
-                    decay: Math.random() * 0.02 + 0.005
+            // Different frequencies for accent vs regular beats
+            osc.frequency.value = currentBeat === 0 ? 1200 : 800;
+            
+            // Apply rhythm style
+            let duration = 0.05;
+            let when = audioContext.currentTime;
+            
+            if (rhythmStyle === 'swing' || rhythmStyle === 'shuffle') {
+                if (currentBeat % 2 === 1) {
+                    const swingRatio = rhythmStyle === 'shuffle' ? 0.67 : 0.6;
+                    when += ((60 / metronomeBPM) * swingRatio - (60 / metronomeBPM) * 0.5);
+                }
+            } else if (rhythmStyle === 'jazz-swing') {
+                if (currentBeat % 2 === 1) {
+                    when += (60 / metronomeBPM) * 0.1;
+                }
+            }
+            
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            
+            gain.gain.setValueAtTime(currentBeat === 0 ? 0.3 : 0.15, when);
+            gain.gain.exponentialRampToValueAtTime(0.01, when + duration);
+            
+            osc.start(when);
+            osc.stop(when + duration);
+            
+            // Update visual indicator
+            document.querySelectorAll('.beat-dot').forEach(dot => dot.classList.remove('active'));
+            document.getElementById('beat' + currentBeat).classList.add('active');
+        }
+        
+        function updateBPM(value) {
+            metronomeBPM = parseInt(value);
+            document.getElementById('bpmValue').textContent = value;
+            document.getElementById('bpmDisplay').textContent = value + ' BPM';
+            
+            if (metronomeActive) {
+                stopMetronome();
+                startMetronome();
+            }
+        }
+        
+        function changeTimeSignature() {
+            const sig = document.getElementById('timeSignature').value;
+            const [beats] = sig.split('/');
+            beatsPerMeasure = parseInt(beats);
+            createBeatIndicator();
+            
+            if (metronomeActive) {
+                stopMetronome();
+                startMetronome();
+            }
+        }
+        
+        function changeRhythmStyle() {
+            rhythmStyle = document.getElementById('rhythmStyle').value;
+            updateStatus('Rhythm: ' + rhythmStyle);
+        }
+        
+        // Recording
+        async function toggleRecord() {
+            if (!audioContext) {
+                updateStatus('Connect audio first');
+                return;
+            }
+            
+            if (!isRecording) {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                recorder = new MediaRecorder(stream);
+                recordChunks = [];
+                
+                recorder.ondataavailable = e => recordChunks.push(e.data);
+                recorder.onstop = () => {
+                    const blob = new Blob(recordChunks, { type: 'audio/webm' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'kozmic-recording-' + Date.now() + '.webm';
+                    a.click();
+                };
+                
+                recorder.start();
+                isRecording = true;
+                document.getElementById('recordBtn').textContent = 'Stop Recording';
+                document.getElementById('recordBtn').classList.add('active');
+                updateStatus('Recording started');
+            } else {
+                recorder.stop();
+                isRecording = false;
+                document.getElementById('recordBtn').textContent = 'Start Recording';
+                document.getElementById('recordBtn').classList.remove('active');
+                updateStatus('Recording saved');
+            }
+        }
+        
+        // Visualization
+        function createParticles() {
+            particles = [];
+            for (let i = 0; i < 50; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 2,
+                    size: Math.random() * 3 + 1
                 });
             }
         }
-
-        function updateIntensity(value) {
-            portableIntensity = parseInt(value);
-            document.getElementById('intensityValue').textContent = value + '%';
-            createPortableParticles();
-            updateStatus(`Intensity: ${value}%`);
+        
+        function setEffect(effect) {
+            currentEffect = effect;
+            updateStatus('Effect: ' + effect);
         }
-
-        function toggleAmplify() {
-            portableIsAmplified = !portableIsAmplified;
-            const btn = document.getElementById('amplifyBtn');
+        
+        function animate() {
+            requestAnimationFrame(animate);
             
-            if (portableIsAmplified) {
-                btn.textContent = 'Amplify ON';
-                btn.classList.add('active');
-                if (portableEffectsChain.inputGain) {
-                    portableEffectsChain.inputGain.gain.setValueAtTime(1.5, portableAudioContext.currentTime);
-                }
-                updateStatus('Audio amplification enabled! 🔊');
-            } else {
-                btn.textContent = 'Amplify OFF';
-                btn.classList.remove('active');
-                if (portableEffectsChain.inputGain) {
-                    portableEffectsChain.inputGain.gain.setValueAtTime(0.8, portableAudioContext.currentTime);
-                }
-                updateStatus('Audio amplification disabled');
-            }
-        }
-
-        // Visualization Engine
-        function startPortableVisualization() {
-            function animate() {
-                portableAnimationId = requestAnimationFrame(animate);
-                renderPortableEffect();
-            }
-            animate();
-        }
-
-        function renderPortableEffect() {
-            if (portableGL) {
-                renderWebGLEffect();
-            } else if (portableCtx) {
-                render2DEffect();
-            }
-        }
-
-        function renderWebGLEffect() {
-            portableGL.clear(portableGL.COLOR_BUFFER_BIT);
+            ctx.fillStyle = 'rgba(26, 26, 46, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Get audio data if available
-            let audioData = null;
-            if (portableAnalyser && portableDataArray) {
-                portableAnalyser.getByteFrequencyData(portableDataArray);
-                audioData = portableDataArray;
-            }
-            
-            // Simple WebGL particle rendering
-            // (In a full implementation, this would use shaders)
-            // For now, we'll fall back to 2D for particle rendering
-            if (portableCtx) {
-                render2DEffect();
-            }
-        }
-
-        function render2DEffect() {
-            if (!portableCtx) {
-                portableCtx = portableCanvas.getContext('2d');
-            }
-            
-            portableCtx.fillStyle = 'rgba(26, 26, 46, 0.1)';
-            portableCtx.fillRect(0, 0, portableCanvas.width, portableCanvas.height);
-            
-            // Get audio data for reactive visuals
             let audioLevel = 0;
-            if (portableAnalyser && portableDataArray) {
-                portableAnalyser.getByteFrequencyData(portableDataArray);
-                audioLevel = Array.from(portableDataArray).reduce((a, b) => a + b) / portableDataArray.length / 255;
+            if (analyser && dataArray) {
+                analyser.getByteFrequencyData(dataArray);
+                audioLevel = Array.from(dataArray).reduce((a, b) => a + b) / dataArray.length / 255;
             }
             
-            // Render based on current effect
-            switch (portableCurrentEffect) {
-                case 'particles':
-                    renderParticles(audioLevel);
-                    break;
-                case 'nebula':
-                    renderNebula(audioLevel);
-                    break;
-                case 'waveform':
-                    renderWaveform(audioLevel);
-                    break;
-                case 'cosmic':
-                    renderCosmic(audioLevel);
-                    break;
-                case 'spiral':
-                    renderSpiral(audioLevel);
-                    break;
-                case 'burst':
-                    renderBurst(audioLevel);
-                    break;
+            if (currentEffect === 'particles') {
+                renderParticles(audioLevel);
+            } else if (currentEffect === 'waveform') {
+                renderWaveform();
+            } else if (currentEffect === 'spiral') {
+                renderSpiral(audioLevel);
             }
         }
-
+        
         function renderParticles(audioLevel) {
-            portableParticles.forEach((particle, index) => {
-                // Update particle
-                particle.x += particle.vx * (1 + audioLevel);
-                particle.y += particle.vy * (1 + audioLevel);
-                particle.life -= particle.decay;
+            particles.forEach(p => {
+                p.x += p.vx * (1 + audioLevel);
+                p.y += p.vy * (1 + audioLevel);
                 
-                // Wrap around edges
-                if (particle.x < 0) particle.x = portableCanvas.width;
-                if (particle.x > portableCanvas.width) particle.x = 0;
-                if (particle.y < 0) particle.y = portableCanvas.height;
-                if (particle.y > portableCanvas.height) particle.y = 0;
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
                 
-                // Remove dead particles
-                if (particle.life <= 0) {
-                    portableParticles[index] = {
-                        x: Math.random() * portableCanvas.width,
-                        y: Math.random() * portableCanvas.height,
-                        vx: (Math.random() - 0.5) * 4,
-                        vy: (Math.random() - 0.5) * 4,
-                        size: Math.random() * 3 + 1,
-                        color: `hsl(${Math.random() * 360}, 70%, 60%)`,
-                        life: 1.0,
-                        decay: Math.random() * 0.02 + 0.005
-                    };
-                }
-                
-                // Draw particle
-                portableCtx.save();
-                portableCtx.globalAlpha = particle.life;
-                portableCtx.fillStyle = particle.color;
-                portableCtx.beginPath();
-                portableCtx.arc(particle.x, particle.y, particle.size * (1 + audioLevel), 0, Math.PI * 2);
-                portableCtx.fill();
-                portableCtx.restore();
+                ctx.fillStyle = '#4ecdc4';
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size * (1 + audioLevel), 0, Math.PI * 2);
+                ctx.fill();
             });
         }
-
-        function renderNebula(audioLevel) {
-            const centerX = portableCanvas.width / 2;
-            const centerY = portableCanvas.height / 2;
-            const time = Date.now() * 0.001;
+        
+        function renderWaveform() {
+            if (!dataArray) return;
             
-            for (let i = 0; i < 100; i++) {
-                const angle = (i / 100) * Math.PI * 2;
-                const radius = 50 + Math.sin(time + i * 0.1) * 30 * (1 + audioLevel);
-                const x = centerX + Math.cos(angle) * radius;
-                const y = centerY + Math.sin(angle) * radius;
-                
-                portableCtx.save();
-                portableCtx.globalAlpha = 0.3;
-                portableCtx.fillStyle = `hsl(${(time * 50 + i * 3) % 360}, 70%, 60%)`;
-                portableCtx.beginPath();
-                portableCtx.arc(x, y, 2 + audioLevel * 5, 0, Math.PI * 2);
-                portableCtx.fill();
-                portableCtx.restore();
-            }
-        }
-
-        function renderWaveform(audioLevel) {
-            if (!portableDataArray) return;
+            ctx.strokeStyle = '#4ecdc4';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
             
-            portableCtx.strokeStyle = '#4ecdc4';
-            portableCtx.lineWidth = 2;
-            portableCtx.beginPath();
-            
-            const sliceWidth = portableCanvas.width / portableDataArray.length;
+            const sliceWidth = canvas.width / dataArray.length;
             let x = 0;
             
-            for (let i = 0; i < portableDataArray.length; i++) {
-                const v = portableDataArray[i] / 128.0;
-                const y = v * portableCanvas.height / 2;
+            for (let i = 0; i < dataArray.length; i++) {
+                const v = dataArray[i] / 128.0;
+                const y = v * canvas.height / 2;
                 
                 if (i === 0) {
-                    portableCtx.moveTo(x, y);
+                    ctx.moveTo(x, y);
                 } else {
-                    portableCtx.lineTo(x, y);
+                    ctx.lineTo(x, y);
                 }
-                
                 x += sliceWidth;
             }
-            
-            portableCtx.stroke();
+            ctx.stroke();
         }
-
-        function renderCosmic(audioLevel) {
-            const centerX = portableCanvas.width / 2;
-            const centerY = portableCanvas.height / 2;
-            const time = Date.now() * 0.002;
-            
-            for (let layer = 0; layer < 3; layer++) {
-                for (let i = 0; i < 50; i++) {
-                    const angle = (i / 50) * Math.PI * 2 + time * (layer + 1);
-                    const radius = (layer + 1) * 30 + Math.sin(time + i * 0.2) * 20 * (1 + audioLevel);
-                    const x = centerX + Math.cos(angle) * radius;
-                    const y = centerY + Math.sin(angle) * radius;
-                    
-                    portableCtx.save();
-                    portableCtx.globalAlpha = 0.4 - layer * 0.1;
-                    portableCtx.fillStyle = `hsl(${(time * 30 + layer * 120) % 360}, 80%, 70%)`;
-                    portableCtx.beginPath();
-                    portableCtx.arc(x, y, 1 + audioLevel * 3, 0, Math.PI * 2);
-                    portableCtx.fill();
-                    portableCtx.restore();
-                }
-            }
-        }
-
+        
         function renderSpiral(audioLevel) {
-            const centerX = portableCanvas.width / 2;
-            const centerY = portableCanvas.height / 2;
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
             const time = Date.now() * 0.003;
             
-            portableCtx.strokeStyle = `hsl(${(time * 100) % 360}, 70%, 60%)`;
-            portableCtx.lineWidth = 2 + audioLevel * 3;
-            portableCtx.beginPath();
+            ctx.strokeStyle = '#ff6b9d';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
             
             for (let i = 0; i < 1000; i++) {
                 const t = i * 0.01;
-                const radius = t * 2 + Math.sin(time + t) * 10 * (1 + audioLevel);
+                const r = t * 2 * (1 + audioLevel);
                 const angle = t + time;
-                const x = centerX + Math.cos(angle) * radius;
-                const y = centerY + Math.sin(angle) * radius;
+                const x = cx + Math.cos(angle) * r;
+                const y = cy + Math.sin(angle) * r;
                 
                 if (i === 0) {
-                    portableCtx.moveTo(x, y);
+                    ctx.moveTo(x, y);
                 } else {
-                    portableCtx.lineTo(x, y);
+                    ctx.lineTo(x, y);
                 }
             }
-            
-            portableCtx.stroke();
+            ctx.stroke();
         }
-
-        function renderBurst(audioLevel) {
-            const centerX = portableCanvas.width / 2;
-            const centerY = portableCanvas.height / 2;
-            const time = Date.now() * 0.005;
-            const numRays = 12;
-            
-            for (let i = 0; i < numRays; i++) {
-                const angle = (i / numRays) * Math.PI * 2;
-                const length = 100 + Math.sin(time + i) * 50 * (1 + audioLevel * 2);
-                
-                portableCtx.save();
-                portableCtx.strokeStyle = `hsl(${(time * 80 + i * 30) % 360}, 80%, 70%)`;
-                portableCtx.lineWidth = 3 + audioLevel * 5;
-                portableCtx.globalAlpha = 0.7;
-                
-                portableCtx.beginPath();
-                portableCtx.moveTo(centerX, centerY);
-                portableCtx.lineTo(
-                    centerX + Math.cos(angle) * length,
-                    centerY + Math.sin(angle) * length
-                );
-                portableCtx.stroke();
-                portableCtx.restore();
-            }
+        
+        function updateStatus(msg) {
+            document.getElementById('status').textContent = msg;
         }
-
-        // Cosmic Creature Easter Egg
-        function clickCreature() {
-            creatureClickCount++;
-            const creature = document.getElementById('cosmicCreature');
-            
-            if (creatureClickCount === 5) {
-                // Hypernova effect!
-                creature.style.fontSize = '4rem';
-                creature.textContent = '💥';
-                creature.style.animation = 'float 0.5s ease-in-out infinite';
-                
-                // Create hypernova visual effect
-                portableIntensity = 100;
-                document.getElementById('intensitySlider').value = 100;
-                document.getElementById('intensityValue').textContent = '100%';
-                createPortableParticles();
-                
-                updateStatus('🌟 HYPERNOVA ACTIVATED! 💥 Ultimate cosmic power unleashed!');
-                
-                setTimeout(() => {
-                    creature.style.fontSize = '2rem';
-                    creature.textContent = '🌟';
-                    creature.style.animation = 'float 3s ease-in-out infinite';
-                    creatureClickCount = 0;
-                    updateStatus('Cosmic creature returns to normal 🌟');
-                }, 5000);
-                
-            } else {
-                const responses = [
-                    '🌟 *sparkles*',
-                    '✨ Hello, cosmic traveler!',
-                    '🎵 The music flows through me...',
-                    '🌌 I sense great creative energy!',
-                    '💫 One more click for something special...'
-                ];
-                updateStatus(responses[creatureClickCount - 1] || responses[0]);
-            }
-        }
-
-        // Session Timer with error handling
-        function startSessionTimer() {
-            try {
-                setInterval(() => {
-                    const elapsed = Date.now() - portableSessionStartTime;
-                    const minutes = Math.floor(elapsed / 60000);
-                    const seconds = Math.floor((elapsed % 60000) / 1000);
-                    const timerElement = document.getElementById('sessionTimer');
-                    if (timerElement) {
-                        timerElement.textContent = 
-                            `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                    }
-                }, 1000);
-            } catch (error) {
-                console.error('Session timer error:', error);
-            }
-        }
-
-        // Status Update System
-        function updateStatus(message) {
-            document.getElementById('portableStatus').textContent = message;
-            console.log('Kozmic Studio:', message);
-        }
-
-        // Responsive canvas resize
+        
+        // Responsive resize
         window.addEventListener('resize', () => {
-            if (portableCanvas) {
-                portableCanvas.width = portableCanvas.offsetWidth;
-                portableCanvas.height = portableCanvas.offsetHeight;
-                createPortableParticles();
-                
-                if (portableGL) {
-                    portableGL.viewport(0, 0, portableCanvas.width, portableCanvas.height);
-                }
-            }
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            createParticles();
         });
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey || e.metaKey) {
-                switch (e.key) {
-                    case '1':
-                        e.preventDefault();
-                        setPortableEffect('particles');
-                        break;
-                    case '2':
-                        e.preventDefault();
-                        setPortableEffect('nebula');
-                        break;
-                    case '3':
-                        e.preventDefault();
-                        setPortableEffect('waveform');
-                        break;
-                    case 'r':
-                        e.preventDefault();
-                        togglePortableRecord();
-                        break;
-                    case 's':
-                        e.preventDefault();
-                        savePortableSession();
-                        break;
-                }
-            }
-            
-            // Space bar for emergency stop
-            if (e.code === 'Space' && e.ctrlKey) {
-                e.preventDefault();
-                if (portableIsRecording) {
-                    togglePortableRecord();
-                }
-                updateStatus('Emergency stop activated!');
-            }
-        });
-
-        // Touch gestures for mobile
-        let touchStartX = 0;
-        let touchStartY = 0;
-
-        portableCanvas.addEventListener('touchstart', (e) => {
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-        });
-
-        portableCanvas.addEventListener('touchend', (e) => {
-            const touchEndX = e.changedTouches[0].clientX;
-            const touchEndY = e.changedTouches[0].clientY;
-            const deltaX = touchEndX - touchStartX;
-            const deltaY = touchEndY - touchStartY;
-            
-            // Swipe gestures
-            if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                if (deltaX > 50) {
-                    // Swipe right - next effect
-                    const effects = ['particles', 'nebula', 'waveform', 'cosmic', 'spiral', 'burst'];
-                    const currentIndex = effects.indexOf(portableCurrentEffect);
-                    const nextIndex = (currentIndex + 1) % effects.length;
-                    setPortableEffect(effects[nextIndex]);
-                } else if (deltaX < -50) {
-                    // Swipe left - previous effect
-                    const effects = ['particles', 'nebula', 'waveform', 'cosmic', 'spiral', 'burst'];
-                    const currentIndex = effects.indexOf(portableCurrentEffect);
-                    const prevIndex = (currentIndex - 1 + effects.length) % effects.length;
-                    setPortableEffect(effects[prevIndex]);
-                }
-            } else {
-                if (deltaY > 50) {
-                    // Swipe down - decrease intensity
-                    const newIntensity = Math.max(0, portableIntensity - 10);
-                    updateIntensity(newIntensity);
-                    document.getElementById('intensitySlider').value = newIntensity;
-                } else if (deltaY < -50) {
-                    // Swipe up - increase intensity
-                    const newIntensity = Math.min(100, portableIntensity + 10);
-                    updateIntensity(newIntensity);
-                    document.getElementById('intensitySlider').value = newIntensity;
-                }
-            }
-        });
-
-        // Performance monitoring
-        let frameCount = 0;
-        let lastTime = performance.now();
-        
-        function trackFrames() {
-            frameCount++;
-        }
-        
-        setInterval(() => {
-            const currentTime = performance.now();
-            const fps = Math.round(frameCount * 1000 / (currentTime - lastTime));
-            frameCount = 0;
-            lastTime = currentTime;
-            
-            // Log performance occasionally
-            if (fps < 30) {
-                console.log(`Kozmic Studio FPS: ${fps} - Consider reducing particle count`);
-            }
-        }, 1000);
-
-        // Enhanced render loop with frame tracking
-        function render2DEffect() {
-            trackFrames(); // Count this frame
-            
-            if (!portableCtx) {
-                portableCtx = portableCanvas.getContext('2d');
-            }
-            
-            portableCtx.fillStyle = 'rgba(26, 26, 46, 0.1)';
-            portableCtx.fillRect(0, 0, portableCanvas.width, portableCanvas.height);
-            
-            // Get audio data for reactive visuals
-            let audioLevel = 0;
-            if (portableAnalyser && portableDataArray) {
-                portableAnalyser.getByteFrequencyData(portableDataArray);
-                audioLevel = Array.from(portableDataArray).reduce((a, b) => a + b) / portableDataArray.length / 255;
-            }
-            
-            // Render based on current effect
-            switch (portableCurrentEffect) {
-                case 'particles':
-                    renderParticles(audioLevel);
-                    break;
-                case 'nebula':
-                    renderNebula(audioLevel);
-                    break;
-                case 'waveform':
-                    renderWaveform(audioLevel);
-                    break;
-                case 'cosmic':
-                    renderCosmic(audioLevel);
-                    break;
-                case 'spiral':
-                    renderSpiral(audioLevel);
-                    break;
-                case 'burst':
-                    renderBurst(audioLevel);
-                    break;
-            }
-        }
-
-        // Clean up on page unload
-        window.addEventListener('beforeunload', () => {
-            if (portableAnimationId) {
-                cancelAnimationFrame(portableAnimationId);
-            }
-            if (portableAudioContext && portableAudioContext.state !== 'closed') {
-                portableAudioContext.close();
-            }
-            if (portableIsRecording && portableRecorder && portableRecorder.state === 'recording') {
-                portableRecorder.stop();
-            }
-            
-            // Clear any intervals
-            clearInterval();
-        });
-
-        // Error handling wrapper
-        function safeExecute(fn, errorMessage = 'Function execution failed') {
-            try {
-                return fn();
-            } catch (error) {
-                console.error(errorMessage, error);
-                updateStatus(`Error: ${errorMessage}`);
-                return null;
-            }
-        }
-
-        // Ensure all functions are properly defined
-        if (typeof updateStatus !== 'function') {
-            window.updateStatus = function(message) {
-                console.log('Kozmic Studio:', message);
-                const statusElement = document.getElementById('portableStatus');
-                if (statusElement) {
-                    statusElement.textContent = message;
-                }
-            };
-        }
     </script>
 </body>
 </html>
